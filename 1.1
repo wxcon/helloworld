@@ -1,0 +1,138 @@
+#include<iostream>
+using namespace std;
+
+#define MAX 1000
+typedef char ElemType;
+
+typedef struct LNode
+{
+	ElemType data;
+	struct LNode *next;
+}SqList;
+
+
+void CreateList(SqList *&L,ElemType a[])
+{
+	L = (SqList *)malloc(sizeof(SqList));
+	SqList *p;
+	SqList *r = L;
+	int i = 0;
+	while (a[i] != '\0')
+	{   
+		p = (SqList *)malloc(sizeof(SqList));
+		p->data = a[i];
+		r->next = p;
+		r = p;
+		i++;
+	}
+	r->next = NULL;
+}
+
+void DispList(SqList *L)
+{
+	SqList *p = L->next;
+	while (p!=NULL)
+	{
+		cout << p->data;
+		p = p->next;
+	}
+	cout << endl;
+}
+
+void DestroyList(SqList *&L)
+{
+	SqList *pre = L, *p = L->next;
+	while (p != NULL)
+	{
+		free(pre);
+		pre = p;
+		p = pre->next;
+	}
+	free(pre);
+}
+int ListLength(SqList *&L)
+{
+	int j = 0;
+	SqList *p = L->next;
+	while (p != NULL)
+	{
+		j++;
+		p = p->next;
+	}
+	return j;
+}
+
+SqList *SubList(SqList *L, int i, int j)
+{
+	int k;
+	SqList *str, *p = L->next, *q, *r;
+	str = (SqList *)malloc(sizeof(SqList));
+	str->next = NULL;
+	r = str;
+	if (i <= 0 || i > ListLength(L) || j<0 || i + j -1>ListLength(L))
+		return str;
+	for (k = 0; k < i - 1; k++)
+		p = p->next;
+	for (k = 1; k <= j; k++)
+	{
+		q = (SqList *)malloc(sizeof(SqList));
+		q->data = p->data;
+		r->next = q;
+		r = q;
+		p = p->next;
+	}
+	r->next = NULL;
+	return str;
+}
+SqList *ConCatList(SqList *s1, SqList *s2)
+{
+	SqList *str, *p = s1->next, *q,*r;
+	str = (SqList *)malloc(sizeof(SqList));
+	r = str;
+	while (p != NULL)
+	{
+		q = (SqList *)malloc(sizeof(SqList));
+		q->data = p->data;
+		r->next = p;
+		r = p;
+		p = p->next;
+	}
+	p = s2->next;
+	while (p != NULL)
+	{
+		q = (SqList *)malloc(sizeof(SqList));
+		q->data = p->data;
+		r->next = q;
+		r = q;
+		p = p->next;
+	}
+	r->next = NULL;
+	return str;
+}
+
+SqList *DiviList(SqList *&L, int i)
+{
+	int j = ListLength(L);
+	SqList *s1, *s2, *str;
+	s1 = SubList(L, 1, 3);
+	s2 = SubList(L, i+1, 3);
+	str = ConCatList(s2, s1);
+
+	return str;
+}
+int main(void)
+{   
+	cout << "please enter the strings: " << endl;
+
+	char *s = new char[MAX];
+	cin >> s;
+	SqList *L, *s1;
+	CreateList(L, s);
+	DispList(L);
+	cout << ListLength(L) << endl;
+	s1 = DiviList(L, 3);
+	DispList(s1);
+	DestroyList(L);
+
+	return 0;
+}
